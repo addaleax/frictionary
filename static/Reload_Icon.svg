@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg2"
+   viewBox="0 0 54.344 55.625"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   width="100%"
+   height="100%"
+   sodipodi:docname="Reload Icon Blue.svg">
+  <defs
+     id="defs9">
+    <linearGradient
+       id="linearGradient3770">
+      <stop
+         style="stop-color:#a0a0a0;stop-opacity:1;"
+         offset="0"
+         id="stop3772" />
+      <stop
+         style="stop-color:#808080;stop-opacity:1;"
+         offset="1"
+         id="stop3774" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3770"
+       id="linearGradient3776"
+       x1="344.43701"
+       y1="341.93124"
+       x2="399.7803"
+       y2="341.93124"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3770"
+       id="linearGradient3782"
+       gradientUnits="userSpaceOnUse"
+       x1="344.43701"
+       y1="341.93124"
+       x2="399.7803"
+       y2="341.93124" />
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="995"
+     id="namedview7"
+     showgrid="false"
+     inkscape:zoom="8.4853931"
+     inkscape:cx="23.845526"
+     inkscape:cy="25.9239"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <g
+     id="layer1"
+     transform="matrix(0.96709785,0,0,0.95587183,-332.69682,-298.78121)"
+     style="fill:url(#linearGradient3776);fill-opacity:1;stroke:#32558c;stroke-width:1.54004705;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none">
+    <path
+       id="path3768"
+       style="text-indent:0;text-transform:none;block-progression:tb;color:#000000;fill:url(#linearGradient3782);fill-opacity:1;stroke:#555555;stroke-width:1.54004705000000010;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 399.28,314.12 -9.125,7.25 c -4.799,-4.0243 -10.962,-6.4688 -17.656,-6.4688 -15.129,0 -27.562,12.434 -27.562,27.562 0,15.129 12.434,27.281 27.562,27.281 11.86,0 22.052,-7.4546 25.906,-17.969 l -9.875,-2.4062 c -2.6427,6.2319 -8.7668,10.531 -16.031,10.531 -9.7241,0 -17.438,-7.7134 -17.438,-17.438 0,-9.7241 7.7134,-17.719 17.438,-17.719 3.6079,0 6.923,1.1171 9.6875,3 l -9.0312,7.1875 26.125,4.8438 0,-24.78421 z"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccsssccsssccccc" />
+  </g>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title></dc:title>
+        <dc:date>2012-07-06T14:30:15</dc:date>
+        <dc:description>simple reload / recycle icon</dc:description>
+        <dc:source>http://openclipart.org/detail/171074/reload-icon-by-mlampret-171074</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>mlampret</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>black</rdf:li>
+            <rdf:li>clip art</rdf:li>
+            <rdf:li>clipart</rdf:li>
+            <rdf:li>free</rdf:li>
+            <rdf:li>icon</rdf:li>
+            <rdf:li>icons</rdf:li>
+            <rdf:li>recycle</rdf:li>
+            <rdf:li>reload</rdf:li>
+            <rdf:li>simple</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

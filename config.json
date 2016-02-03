@@ -1,0 +1,14 @@
+{
+  "userAgentContact": "sqrt@entless.org",
+  "sites": [
+    { "site": "en", "base": "https://en.wikipedia.org/" },
+    { "site": "de", "base": "https://de.wikipedia.org/" }
+  ],
+  "db": {
+    "host": "http://localhost",
+    "port": 5984,
+    "opt": {"cache": true},
+    "dbname": "frictionary"
+  },
+  "defaultRandom": 50
+}
