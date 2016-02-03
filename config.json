@@ -2,7 +2,8 @@
   "userAgentContact": "sqrt@entless.org",
   "sites": [
     { "site": "en", "base": "https://en.wikipedia.org/" },
-    { "site": "de", "base": "https://de.wikipedia.org/" }
+    { "site": "de", "base": "https://de.wikipedia.org/" },
+    { "site": "fr", "base": "https://fr.wikipedia.org/" }
   ],
   "db": {
     "host": "http://localhost",
