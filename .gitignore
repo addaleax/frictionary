@@ -1,3 +1,4 @@
 .fn-secret
 node_modules/
 test/
+npm-debug.log
