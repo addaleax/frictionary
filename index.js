@@ -10,13 +10,10 @@ const request = require('request');
 const cradle = require('cradle');
 const cookieSession = require('cookie-session');
 const bodyParser = require('body-parser');
-const shuffle = require('fy-shuffle');
+const _ = require('lodash');
 
 const SuggestionFetch = require('./suggestion-fetch').SuggestionFetch;
 const SuggestionStorage = require('./suggestion-storage').SuggestionStorage;
-
-const uniq = (arr, key) => 
-  arr.sort().filter((x, i) => i === 0 || arr[i-1][key] !== x[key]);
 
 class Frictionary {
   constructor(opt) {
@@ -136,7 +133,7 @@ class Frictionary {
       const top = results[0].filter(seenFilter);
       const random = results[1].filter(seenFilter);
       
-      const list = shuffle(uniq(random.concat(shuffle(top)), 'title')
+      const list = _.shuffle(_.uniqBy(random.concat(_.shuffle(top)), 'title')
         .slice(0, this.opt.defaultRandom*2));
       
       if (list.length >= this.opt.defaultRandom) {
@@ -144,7 +141,7 @@ class Frictionary {
       }
       
       return this.fetchAndStore(fetcher).then(additional =>
-        shuffle(list.concat(additional))
+        _.shuffle(list.concat(additional))
       );
     }).then(list => {
       req.session.seen = req.session.seen.concat(

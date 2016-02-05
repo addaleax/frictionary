@@ -13,8 +13,8 @@
     "cradle": "^0.7.1",
     "debug": "^2.2.0",
     "express": "^4.13.4",
-    "fy-shuffle": "^1.0.0",
     "jquery": "^2.2.0",
+    "lodash": "^4.2.1",
     "morgan": "^1.6.1"
   },
   "scripts": {
