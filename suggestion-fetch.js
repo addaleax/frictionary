@@ -41,7 +41,7 @@ class SuggestionFetch {
       if (list.length >= n)
         return list;
       
-      return this.fetchSome(list.length - n)
+      return this.fetchSome(n - list.length)
         .then(additional => list.concat(additional));
     });
   }
@@ -89,6 +89,7 @@ class SuggestionFetch {
       const excerpt = wikipediaExcerpt(res.body);
       
       if (!excerpt) {
+        debug('Rejecting title', title);
         return null;
       }
       
