@@ -31,10 +31,10 @@ function loadSuggestions() {
           '<img src="Wikipedia-W-bold-in-square.svg" ' +
           'alt="Wikipedia" class="wikipedia-logo" /></a></div>\n' +
         '<div class="votes">\n' +
-          '<a id="vote-pos-' + index + '" href="javascript:void(0)">' +
-            (votes[1] || 0) + ' +</a> |\n' +
-          '<a id="vote-neg-' + index + '" href="javascript:void(0)">− ' +
-            (votes[-1] || 0) + '</a>\n' +
+          '<button id="vote-pos-' + index + '" href="javascript:void(0)">' +
+            (votes[1] || 0) + ' +</button> |\n' +
+          '<button id="vote-neg-' + index + '" href="javascript:void(0)">− ' +
+            (votes[-1] || 0) + '</button>\n' +
         '</div>\n' +
       '</li>';
     }).join('\n'));

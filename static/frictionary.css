@@ -18,8 +18,13 @@ a {
   text-decoration: none;
 }
 
-.votes a {
+.votes button {
   color: inherit;
+  border: none;
+  background: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  padding: 0px;
 }
 
 select {
