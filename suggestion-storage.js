@@ -45,7 +45,8 @@ class SuggestionStorage {
           by_votes: {
             map: function(doc) {
               if (doc.site && doc.title && typeof doc.votes !== 'undefined') {
-                emit([doc.site, doc.votes], doc);
+                var total = (doc.votes[+1] || 0) - (doc.votes[-1] || 0);
+                emit([doc.site, total], doc);
               }
             }
           }
@@ -104,12 +105,17 @@ class SuggestionStorage {
   }
   
   getTop(site, n) {
+    debug('Fetching top', site, n);
     return this._db.viewAsync('suggestions/by_votes', {
       startkey: [site, 9999999999],
       descending: true,
       limit: n
     }).then(res => {
-      return res.toArray().filter(r => r.site === site);
+      const overallResult = res.toArray().filter(r => r.site === site);
+      
+      debug('Fetched top', site, n, res.length, overallResult.length);
+      
+      return overallResult;
     });
   }
   

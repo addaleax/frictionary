@@ -11,6 +11,7 @@ const cradle = require('cradle');
 const cookieSession = require('cookie-session');
 const bodyParser = require('body-parser');
 const _ = require('lodash');
+const debug = require('debug')('frictionary:index');
 
 const SuggestionFetch = require('./suggestion-fetch').SuggestionFetch;
 const SuggestionStorage = require('./suggestion-storage').SuggestionStorage;
@@ -132,6 +133,8 @@ class Frictionary {
         req.session.seen.indexOf(entry.site + ':' + entry.title) === -1;
       const top = results[0].filter(seenFilter);
       const random = results[1].filter(seenFilter);
+      
+      debug('Loaded initial results', top.length, random.length);
       
       const list = _.shuffle(_.uniqBy(random.concat(_.shuffle(top)), 'title')
         .slice(0, this.opt.defaultRandom*2));
