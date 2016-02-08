@@ -1,9 +1,30 @@
 {
-  "userAgentContact": "sqrt@entless.org",
+  "userAgentContact": "http://frictionary.org; sqrt@entless.org",
   "sites": [
-    { "site": "en", "base": "https://en.wikipedia.org/" },
-    { "site": "de", "base": "https://de.wikipedia.org/" },
-    { "site": "fr", "base": "https://fr.wikipedia.org/" }
+    {
+      "site": "en",
+      "base": "https://en.wikipedia.org/",
+      "info": {
+        "rules": "https://en.wikipedia.org/wiki/Fictionary#Gameplay",
+        "rulesText": "Rules" 
+      } 
+    },
+    {
+      "site": "de",
+      "base": "https://de.wikipedia.org/",
+      "info": {
+        "rules": "https://de.wikipedia.org/wiki/Lexikonspiel#Spielregeln",
+        "rulesText": "Regeln"
+      }
+    },
+    {
+      "site": "fr",
+      "base": "https://fr.wikipedia.org/",
+      "info": {
+        "rules": "https://fr.wikipedia.org/wiki/Jeu_du_dictionnaire#D.C3.A9roulement_d.27une_manche",
+        "rulesText": "Déroulements"
+      }
+    }
   ],
   "db": {
     "host": "http://localhost",
@@ -11,5 +32,5 @@
     "opt": {"cache": true},
     "dbname": "frictionary"
   },
-  "defaultRandom": 50
+  "defaultRandom": 10
 }

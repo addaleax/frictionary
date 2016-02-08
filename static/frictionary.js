@@ -1,6 +1,7 @@
 (function() {'use strict';
 
 var curSite = typeof localStorage === 'undefined' ? '' : localStorage.site;
+var siteList = [];
 var curSuggestions = [];
 
 function vote(suggestion, sign, element) {
@@ -18,7 +19,20 @@ function vote(suggestion, sign, element) {
   });
 }
 
-function loadSuggestions() {
+function updateRulesLink() {
+  var siteInfo = (siteList.filter(function(s) {
+    return s.id === curSite;
+  })[0] || {}).info;
+  
+  if (siteInfo && siteInfo.rules) {
+    $('.rules-link').attr('href', siteInfo.rules);
+    $('.rules-link').text('→\u00a0' + siteInfo.rulesText);
+  }
+}
+
+function changeSite() {
+  updateRulesLink();
+  
   $.ajax({
     url: '/suggestions/' + curSite
   }).then(function(results) {
@@ -27,7 +41,7 @@ function loadSuggestions() {
       var votes = s.votes || {};
       return '<li class="suggestion">\n' +
         '<div class="suggestion-excerpt">' + s.excerpt + '</div>\n' +
-        '<div><a href="' + s.ref + '" class="wikipedia-link">→ ' +
+        '<div><a href="' + s.ref + '" class="wikipedia-link">→\u00a0' +
           '<img src="Wikipedia-W-bold-in-square.svg" ' +
           'alt="Wikipedia" class="wikipedia-logo" /></a></div>\n' +
         '<div class="votes">\n' +
@@ -50,20 +64,24 @@ function loadSuggestions() {
 
 $(document).ready(function() {
   if (curSite) {
-    loadSuggestions();
+    changeSite();
   }
 
   $.ajax({
     url: '/sites'
   }).then(function(res) {
+    siteList = res.data;
     if (!curSite) {
-      curSite = res.data[0];
-      loadSuggestions();
+      curSite = siteList[0].id;
+      changeSite();
+    } else {
+      // always at least update the rules link
+      updateRulesLink();
     }
     
-    $('#site-selector').html(res.data.map(function(site) {
-      return '<option ' + (curSite === site ? 'selected': '') + '>' +
-        site + '</option>';
+    $('#site-selector').html(siteList.map(function(site) {
+      return '<option ' + (curSite === site.id ? 'selected': '') + '>' +
+        site.id + '</option>';
     }).join('\n')).change(function() {
       curSite = $('#site-selector').val();
       document.cookie = curSite;
@@ -71,11 +89,11 @@ $(document).ready(function() {
         localStorage.site = curSite;
       }
       
-      loadSuggestions();
+      changeSite();
     });
   });
 
-  $('.reload').click(loadSuggestions);
+  $('.reload').click(changeSite);
 });
 
 })();

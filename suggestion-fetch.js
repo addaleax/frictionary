@@ -31,6 +31,10 @@ class SuggestionFetch {
     return this.options.site;
   }
   
+  get siteInfo() {
+    return this.options.info;
+  }
+  
   init() {
   }
   

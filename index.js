@@ -26,7 +26,8 @@ class Frictionary {
       return new SuggestionFetch({
         userAgent: this.userAgent,
         base: entry.base,
-        site: entry.site
+        site: entry.site,
+        info: entry.info
       });
     });
     
@@ -63,13 +64,14 @@ class Frictionary {
     });
   }
   
-  get sites() {
+  get siteNames() {
     return this.fetchers.map(f => f.site);
   }
   
   getSites(req, res) {
+    const sites = this.fetchers.map(f => ({"id": f.site, "info": f.siteInfo}));
     res.send({
-      data: this.sites
+      data: sites
     });
   }
   
@@ -115,7 +117,7 @@ class Frictionary {
   }
   
   getSuggestions(req, res) {
-    const sites = this.sites;
+    const sites = this.siteNames;
     const site = req.params.site;
     
     if (sites.indexOf(site) === -1) {
