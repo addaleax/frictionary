@@ -125,8 +125,9 @@ class Frictionary {
     const fetcher = this.fetchers[sites.indexOf(site)];
     
     return Promise.all([
+      // loading from our own DB is cheap -> don’t be afraid to do it a lot!
       this.storage.getCachedTop(site, 2048),
-      this.storage.getRandom(site, this.opt.defaultRandom)
+      this.storage.getRandom(site, this.opt.defaultRandom * 4)
     ]).then(results => {
       req.session.seen = req.session.seen || [];
       const seenFilter = entry => 

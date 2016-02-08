@@ -84,10 +84,6 @@ class SuggestionStorage {
     });
   }
   
-  getRandom(site, n) {
-    return this._getRandom(site, n, 5);
-  }
-  
   getCachedTop(site, n) {
     const key = site + ':' + n
     const cache = this.cache[key];
@@ -119,10 +115,14 @@ class SuggestionStorage {
     });
   }
   
+  getRandom(site, n) {
+    return this._getRandom(site, n, 5);
+  }
+  
   _getRandom(site, n, maxIterationsLeft) {
-    debug('Fetch suggestions', site, n, maxIterationsLeft);
+    debug('Fetch random suggestions', site, n, maxIterationsLeft);
     
-    return this._db.viewAsync('suggestions/all', {
+    return this._db.viewAsync('suggestions/by_random', {
       startkey: [site, Math.random()],
       descending: Math.random() > 0.5,
       limit: n
@@ -130,10 +130,14 @@ class SuggestionStorage {
       res = res.toArray().filter(r => r.site === site);
       
       if (res.length < n && maxIterationsLeft > 0) {
+        debug('Recursively fetching more random suggestions',
+          site, n, res.length, maxIterationsLeft);
+        
         return this._getRandom(site, n - res.length, maxIterationsLeft-1)
           .then(res2 => res.concat(res2));
       }
       
+      debug('Loaded random suggestions', site, n, res.length);
       return res;
     });
   }
