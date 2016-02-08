@@ -3,6 +3,11 @@ const cheerio = require('cheerio');
 
 module.exports = function(body) {
   const $ = cheerio.load(body);
+  
+  // Try to ignore geographic stuff
+  if ($('.geo').length > 0) {
+    return null;
+  }
 
   // Take the first paragraph containing a bold entry.
   // Best guess only, sorry.
