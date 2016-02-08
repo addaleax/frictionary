@@ -16,6 +16,8 @@ const debug = require('debug')('frictionary:index');
 const SuggestionFetch = require('./suggestion-fetch').SuggestionFetch;
 const SuggestionStorage = require('./suggestion-storage').SuggestionStorage;
 
+const msPerDay = 86400000;
+
 class Frictionary {
   constructor(opt) {
     this.opt = opt;
@@ -55,7 +57,16 @@ class Frictionary {
       this.app.listen(this.opt.httpPort || 3000),
       Promise.all(this.fetchers.map(f => f.init())),
       this.storage.init()
-    ]);
+    ]).then(() => {
+      setInterval(() => this.removeOutdated(), msPerDay);
+      
+      return this.removeOutdated();
+    });
+  }
+  
+  removeOutdated() {
+    const outdatedMillisecs = parseInt(this.opt.outdatedDays) * msPerDay;
+    return this.storage.removeOutdated(Date.now() - outdatedMillisecs);
   }
   
   fetchAndStore(fetcher) {

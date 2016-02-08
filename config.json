@@ -32,5 +32,6 @@
     "opt": {"cache": true},
     "dbname": "frictionary"
   },
-  "defaultRandom": 10
+  "defaultRandom": 10,
+  "outdatedDays": 10
 }

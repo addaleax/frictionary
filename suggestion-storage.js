@@ -28,13 +28,6 @@ class SuggestionStorage {
     }).then(() => {
       return Promise.all([
         this._db.saveAsync('_design/suggestions', {
-          all: {
-            map: function (doc) {
-              if (doc.site && doc.title) {
-                emit([doc.site, doc.title], doc);
-              }
-            }
-          },
           by_random: {
             map: function(doc) {
               if (doc.site && doc.title && doc.random) {
@@ -47,6 +40,15 @@ class SuggestionStorage {
               if (doc.site && doc.title && typeof doc.votes !== 'undefined') {
                 var total = (doc.votes[+1] || 0) - (doc.votes[-1] || 0);
                 emit([doc.site, total], doc);
+              }
+            }
+          },
+          outdated: {
+            map: function (doc) {
+              if (typeof doc.votes === 'undefined' ||
+                (doc.votes[+1] || 0) <= (doc.votes[-1] || 0))
+              {
+                emit(doc.fetchTime, doc);
               }
             }
           }
@@ -112,6 +114,17 @@ class SuggestionStorage {
       debug('Fetched top', site, n, res.length, overallResult.length);
       
       return overallResult;
+    });
+  }
+  
+  removeOutdated(maxTimestamp) {
+    return this._db.viewAsync('suggestions/outdated', {
+      startkey: maxTimestamp,
+      descending: true
+    }).then(res => {
+      debug('Removing outdated suggestions', res.length);
+      
+      return res.toArray().map(r => this._db.removeAsync(r._id, r._rev));
     });
   }
   
