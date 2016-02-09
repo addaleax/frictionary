@@ -8,7 +8,8 @@ const morgan = require('morgan');
 const Promise = require('bluebird');
 const request = require('request');
 const cradle = require('cradle');
-const cookieSession = require('cookie-session');
+const session = require('express-session');
+const SessionStore = require('session-file-store')(session);
 const bodyParser = require('body-parser');
 const _ = require('lodash');
 const debug = require('debug')('frictionary:index');
@@ -43,9 +44,14 @@ class Frictionary {
 
     this.app.use(morgan('combined'));
     this.app.use(compression());
-    this.app.use(bodyParser.json());
     this.app.use(express.static(path.resolve(__dirname, 'static')));
-    this.app.use(cookieSession({secret: opt.secret}));
+    this.app.use(bodyParser.json());
+    this.app.use(session({
+      secret: opt.secret,
+      store: new SessionStore(),
+      resave: false,
+      saveUninitialized: false
+    }));
 
     this.app.get('/sites', (req, res) => this.getSites(req, res));
     this.app.get('/suggestions/:site?', (req, res) => this.getSuggestions(req, res));

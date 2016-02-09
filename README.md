@@ -9,7 +9,7 @@ Frictionary
 Hey! This is just a small project of mine for game nights with friends
 where you can play [Fictionary](https://en.wikipedia.org/wiki/Fictionary).
 
-It fetches the first paragraphs from Wikipedia articles and diplays them;
+It fetches the first paragraphs of Wikipedia articles and displays them;
 It’s far from perfect yet, so if you want something changed (or want to
 change something yourself!), please contact me here or at the e-mail address
 provided on the online version.

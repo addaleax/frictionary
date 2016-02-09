@@ -9,13 +9,14 @@
     "body-parser": "^1.14.2",
     "cheerio": "^0.20.0",
     "compression": "^1.6.1",
-    "cookie-session": "^1.2.0",
     "cradle": "^0.7.1",
     "debug": "^2.2.0",
     "express": "^4.13.4",
+    "express-session": "^1.13.0",
     "jquery": "^2.2.0",
     "lodash": "^4.2.1",
-    "morgan": "^1.6.1"
+    "morgan": "^1.6.1",
+    "session-file-store": "0.0.24"
   },
   "scripts": {
     "start": "./index.js"
