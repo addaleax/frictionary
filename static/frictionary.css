@@ -65,3 +65,7 @@ select {
 .wrap-black a {
   color: orange;
 }
+
+.reference {
+  display: none;
+}
