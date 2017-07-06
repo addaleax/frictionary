@@ -17,7 +17,7 @@ function wikipediaExcerpt(body) {
   const desc = $($.root().find('p').filter(function(i, el) {
     return $(el).find('b').length > 0;
   }).get(0));
-  
+
   // If we and with a colon, this is probably some
   // kind of disambiguation or list
   if (/:$/.test(desc.text().trim())) {

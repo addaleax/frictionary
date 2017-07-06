@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 'use strict';
 
+const fs = require('fs');
+const crypto = require('crypto');
+const util = require('util');
 const path = require('path');
 const express = require('express');
 const compression = require('compression');
@@ -17,6 +20,10 @@ const debug = require('debug')('frictionary:index');
 const SuggestionFetch = require('./suggestion-fetch').SuggestionFetch;
 const SuggestionStorage = require('./suggestion-storage').SuggestionStorage;
 
+const readFileAsync = util.promisify(fs.readFile);
+const writeFileAsync = util.promisify(fs.writeFile);
+const randomBytesAsync = util.promisify(crypto.randomBytes);
+
 const msPerDay = 86400000;
 
 class Frictionary {
@@ -24,7 +31,7 @@ class Frictionary {
     this.opt = opt;
 
     this.userAgent = 'Frictionary/1.0 (+' + opt.userAgentContact + ') Node.js/' + process.version;
-    
+
     this.fetchers = opt.sites.map(entry => {
       return new SuggestionFetch({
         userAgent: this.userAgent,
@@ -33,11 +40,11 @@ class Frictionary {
         info: entry.info
       });
     });
-    
+
     const dbConn = new cradle.Connection(opt.db.host, opt.db.port, opt.db.opt);
     const db = Promise.promisifyAll(dbConn.database(opt.db.dbname));
-    
-    this.storage = new SuggestionStorage({db: db});
+
+    this.storage = new SuggestionStorage({db});
     this.voteCache = new Map();
 
     this.app = express();
@@ -57,51 +64,52 @@ class Frictionary {
     this.app.get('/suggestions/:site?', (req, res) => this.getSuggestions(req, res));
     this.app.post('/vote/:suggestion', (req, res) => this.voteForSuggestion(req, res));
   }
-  
-  init() {
-    return Promise.all([
+
+  async init() {
+    await Promise.all([
       this.app.listen(this.opt.httpPort || 3000),
       Promise.all(this.fetchers.map(f => f.init())),
       this.storage.init()
-    ]).then(() => {
-      setInterval(() => this.removeOutdated(), msPerDay);
-      
-      return this.removeOutdated();
-    });
+    ]);
+
+    setInterval(() => this.removeOutdated(), msPerDay);
+
+    return this.removeOutdated();
   }
-  
+
   removeOutdated() {
     const outdatedMillisecs = parseInt(this.opt.outdatedDays) * msPerDay;
     return this.storage.removeOutdated(Date.now() - outdatedMillisecs);
   }
-  
-  fetchAndStore(fetcher) {
-    return fetcher.fetchSome().then(list => {
-      return this.storage.saveSuggestions(list).then(() => list);
-    });
+
+  async fetchAndStore(fetcher) {
+    const list = await fetcher.fetchSome();
+
+    await this.storage.saveSuggestions(list);
+    return list;
   }
-  
+
   get siteNames() {
     return this.fetchers.map(f => f.site);
   }
-  
+
   getSites(req, res) {
     const sites = this.fetchers.map(f => ({"id": f.site, "info": f.siteInfo}));
     res.send({
       data: sites
     });
   }
-  
-  voteForSuggestion(req, res) {
+
+  async voteForSuggestion(req, res) {
     console.log(req.params, req.body);
     const id = req.params.suggestion;
     const vote = parseInt(req.body.vote);
     const remote = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    
+
     if ([+1, -1].indexOf(vote) === -1) {
       return res.status(403).send({error: 'Invalid vote count'});
     }
-    
+
     const vc = this.voteCache.get(remote);
     const vcEntry = { id: id, vote: vote, time: Date.now() };
     if (vc) {
@@ -110,101 +118,97 @@ class Frictionary {
             .reduce((a, b) => a+b) + vote) >= 2) {
         return res.status(403).send({error: 'Already voted'});
       }
-      
+
       // allow 50 votes per hour
       if (vc.filter(entry => entry.time < Date.now() - 60 * 60 * 1000)
         .length > 50) {
         return res.status(403).send({error: 'Too many votes'});
       }
-      
+
       vc.push(vcEntry);
     } else {
       this.voteCache.set(remote, [vcEntry]);
     }
-    
-    return this.storage.voteForSuggestion(id, vote).then(() => {
-      return res.send({status: 'OK'});
-    }).catch(err => {
+
+    try {
+      await this.storage.voteForSuggestion(id, vote);
+      await res.send({status: 'OK'});
+    } catch (err) {
       if (err.notFound) {
-        return res.status(404).send({error: 'No such ID'});
+        await res.status(404).send({error: 'No such ID'});
       }
-      
-      return res.status(500).send(String(err));
-    });
+
+      await res.status(500).send(String(err));
+    }
   }
-  
-  getSuggestions(req, res) {
+
+  async getSuggestions(req, res) {
     const sites = this.siteNames;
     const site = req.params.site;
-    
+
     if (sites.indexOf(site) === -1) {
-      return res.status(404).send({error: 'No such site'});
+      await res.status(404).send({error: 'No such site'});
     }
-    
+
     const fetcher = this.fetchers[sites.indexOf(site)];
-    
-    return Promise.all([
-      // loading from our own DB is cheap -> don’t be afraid to do it a lot!
-      this.storage.getCachedTop(site, 2048),
-      this.storage.getRandom(site, this.opt.defaultRandom * 4)
-    ]).then(results => {
+
+    try {
+      const [ top_, random_ ] = await Promise.all([
+        // loading from our own DB is cheap -> don’t be afraid to do it a lot!
+        this.storage.getCachedTop(site, 2048),
+        this.storage.getRandom(site, this.opt.defaultRandom * 4)
+      ]);
+
       req.session.seen = req.session.seen || [];
-      const seenFilter = entry => 
+      const seenFilter = entry =>
         req.session.seen.indexOf(entry.site + ':' + entry.title) === -1;
-      const top = results[0].filter(seenFilter);
-      const random = results[1].filter(seenFilter);
-      
+      const top = top_.filter(seenFilter);
+      const random = random_.filter(seenFilter);
+
       debug('Loaded initial results', top.length, random.length);
-      
-      const list = _.shuffle(_.uniqBy(random.concat(_.shuffle(top)), 'title')
+
+      let list = _.shuffle(_.uniqBy(random.concat(_.shuffle(top)), 'title')
         .slice(0, this.opt.defaultRandom*2));
-      
-      if (list.length >= this.opt.defaultRandom) {
-        return list;
+
+      if (list.length < this.opt.defaultRandom) {
+        const additional = await this.fetchAndStore(fetcher);
+        list = _.shuffle(list.concat(additional));
       }
-      
-      return this.fetchAndStore(fetcher).then(additional =>
-        _.shuffle(list.concat(additional))
-      );
-    }).then(list => {
+
       req.session.seen = req.session.seen.concat(
         list.map(entry => entry.site + ':' + entry.title)
       );
-      
-      return res.send({
+
+      await res.send({
         data: list
-      })
-    }).catch(err => {
+      });
+    } catch (err) {
       console.error(err);
-      res.status(500).send(String(err));
-    });
-    
-    this.fetchAndStore(fetcher);
+      await res.status(500).send(String(err));
+    }
+
+    await this.fetchAndStore(fetcher);
   }
 }
 
 if (require.main === module) {
-  process.on('uncaughtException',  err => console.error(err));
-  process.on('unhandledRejection', err => console.error(err));
-  
-  const fs = Promise.promisifyAll(require('fs'));
-  const crypto = Promise.promisifyAll(require('crypto'));
-  const opt = {};
-  
-  fs.readFileAsync(path.resolve(__dirname, 'config.json')).then(config => {
-    Object.assign(opt, JSON.parse(config));
-    
+  (async function() {
+    process.on('uncaughtException',  err => console.error(err));
+    process.on('unhandledRejection', err => console.error(err));
+
+    const config = await readFileAsync(path.resolve(__dirname, 'config.json'));
+    const opt = Object.assign({}, JSON.parse(config));
+
     const spath = path.resolve(__dirname, '.fn-secret');
-    
-    return fs.readFileAsync(spath, 'utf-8').catch(e => {
-      return crypto.randomBytesAsync(8).then(buf => buf.toString('base64'));
-    }).then(secret => {
-      return fs.writeFileAsync(spath, secret, 'utf-8').then(() => secret);
-    });
-  }).then(secret => {
-    opt.secret = secret;
-    
+    try {
+      opt.secret = await readFileAsync(spath, 'utf-8');
+    } catch (e) {
+      opt.secret = (await randomBytesAsync(8)).toString('base64');
+    }
+
+    await writeFileAsync(spath, opt.secret, 'utf-8');
+
     const frictionary = new Frictionary(opt);
-    frictionary.init();
-  });
+    await frictionary.init();
+  })();
 }
