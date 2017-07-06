@@ -1,7 +1,10 @@
 'use strict';
 const cheerio = require('cheerio');
+const fs = require('fs');
 
-module.exports = function(body) {
+module.exports = wikipediaExcerpt;
+
+function wikipediaExcerpt(body) {
   const $ = cheerio.load(body);
   
   // Try to ignore geographic stuff
@@ -11,7 +14,7 @@ module.exports = function(body) {
 
   // Take the first paragraph containing a bold entry.
   // Best guess only, sorry.
-  const desc = $($.root().children('p').filter(function(i, el) {
+  const desc = $($.root().find('p').filter(function(i, el) {
     return $(el).find('b').length > 0;
   }).get(0));
   
@@ -23,3 +26,12 @@ module.exports = function(body) {
   
   return desc.html();
 };
+
+if (require.main === module) {
+  const file = fs.readFileSync(process.argv[2], 'utf8');
+  const excerpt = wikipediaExcerpt(file);
+  if (excerpt === null)
+    process.stderr.write('[null]\n');
+  else
+    process.stderr.write(`${excerpt}\n`);
+}
