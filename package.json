@@ -5,16 +5,15 @@
   "description": "Wikipedia summaries for fictionary",
   "main": "index.js",
   "dependencies": {
-    "bluebird": "^3.2.1",
     "body-parser": "^1.14.2",
     "cheerio": "^0.20.0",
     "compression": "^1.6.1",
-    "cradle": "^0.7.1",
-    "debug": "^2.2.0",
+    "debug": "^4.3.4",
     "express": "^4.13.4",
     "express-session": "^1.13.0",
     "jquery": "^2.2.0",
     "lodash": "^4.2.1",
+    "mongodb": "^4.9.0",
     "morgan": "^1.6.1",
     "session-file-store": "0.0.24"
   },

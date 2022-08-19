@@ -8,9 +8,8 @@ const path = require('path');
 const express = require('express');
 const compression = require('compression');
 const morgan = require('morgan');
-const Promise = require('bluebird');
 const request = require('request');
-const cradle = require('cradle');
+const { MongoClient } = require('mongodb');
 const session = require('express-session');
 const SessionStore = require('session-file-store')(session);
 const bodyParser = require('body-parser');
@@ -41,8 +40,8 @@ class Frictionary {
       });
     });
 
-    const dbConn = new cradle.Connection(opt.db.host, opt.db.port, opt.db.opt);
-    const db = Promise.promisifyAll(dbConn.database(opt.db.dbname));
+    const dbConn = new MongoClient(opt.db.connectionString);
+    const db = dbConn.db(opt.db.dbname);
 
     this.storage = new SuggestionStorage({db});
     this.voteCache = new Map();
@@ -79,7 +78,7 @@ class Frictionary {
 
   removeOutdated() {
     const outdatedMillisecs = parseInt(this.opt.outdatedDays) * msPerDay;
-    return this.storage.removeOutdated(Date.now() - outdatedMillisecs);
+    return this.storage.removeOutdated(new Date(Date.now() - outdatedMillisecs));
   }
 
   async fetchAndStore(fetcher) {

@@ -107,7 +107,7 @@ class SuggestionFetch {
       title: title,
       ref: this.options.base + '/w/index.php?title=' + encodeURIComponent(title),
       excerpt: excerpt,
-      fetchTime: Date.now()
+      fetchTime: new Date()
     };
   }
 

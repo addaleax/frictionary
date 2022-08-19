@@ -1,13 +1,13 @@
 {
-  "userAgentContact": "https://frictionary.org; sqrt@entless.org",
+  "userAgentContact": "https://frictionary.org; anna@addaleax.net",
   "sites": [
     {
       "site": "en",
       "base": "https://en.wikipedia.org/",
       "info": {
         "rules": "https://en.wikipedia.org/wiki/Fictionary#Gameplay",
-        "rulesText": "Rules" 
-      } 
+        "rulesText": "Rules"
+      }
     },
     {
       "site": "de",
@@ -27,9 +27,7 @@
     }
   ],
   "db": {
-    "host": "http://localhost",
-    "port": 5984,
-    "opt": {"cache": true},
+    "connectionString": "mongodb://localhost/",
     "dbname": "frictionary"
   },
   "defaultRandom": 10,
